@@ -1,27 +1,17 @@
-from fastapi import FastAPI, HTTPException
-from fastapi import File, UploadFile, Form
-from fastapi.responses import JSONResponse
-from pydantic import BaseModel
+from fastapi import FastAPI
 import sys
 import os
-import asyncio
-import tempfile
 
-# Add project root to path so we can import core modules
+# Make project root importable for core modules
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from core.plugin_manager import PluginManager
-from core.async_event_bus import AsyncEventBus
-from core.logging_utils import get_logger, setup_logging
-from api.plugin_models import ExternalPluginInstallRequest
+from core.logging_utils import setup_logging
+from api.deps import logger
+from api.controllers.plugins import router as plugins_router
+from api.controllers.email import router as email_router
+from api.controllers.status import router as status_router
 
 setup_logging()
-logger = get_logger("api")
-
-# Initialize the plugin system with async event bus
-event_bus = AsyncEventBus()
-plugin_manager = PluginManager(event_bus)
-plugin_manager.load_plugins()
 
 app = FastAPI(
     title="Workflow Automation Platform API",
@@ -29,145 +19,16 @@ app = FastAPI(
     version="1.0.0"
 )
 
-
-class EmailPayload(BaseModel):
-    from_addr: str
-    subject: str
+# Include routers from separated controller modules
+app.include_router(plugins_router)
+app.include_router(email_router)
+app.include_router(status_router)
 
 
 @app.get("/")
 async def root():
     """Health check endpoint."""
     return {"status": "ok", "message": "Workflow Automation API is running"}
-
-
-@app.get("/plugins")
-async def list_plugins():
-    """List all loaded plugins."""
-    try:
-        plugins_list = []
-        for name, plugin in plugin_manager.plugins.items():
-            plugins_list.append({
-                "name": name,
-                "class": plugin.__class__.__name__
-            })
-        return {"plugins": plugins_list, "count": len(plugins_list)}
-    except Exception as exc:
-        logger.exception("Failed to list plugins: %s", exc)
-        raise HTTPException(status_code=500, detail=str(exc))
-
-
-@app.post("/plugins/install")
-async def install_plugin(request: ExternalPluginInstallRequest):
-    """Install an external plugin from a folder on disk and reload the system."""
-    try:
-        plugin_name = plugin_manager.install_external_plugin(request.source_path, overwrite=request.force)
-        plugin_manager.reload_plugins()
-        return {
-            "status": "success",
-            "message": f"Plugin installed and loaded: {plugin_name}",
-            "plugin": plugin_name
-        }
-    except FileExistsError as exc:
-        logger.warning("Plugin install skipped: %s", exc)
-        raise HTTPException(status_code=409, detail=str(exc))
-    except Exception as exc:
-        logger.exception("Failed to install plugin: %s", exc)
-        raise HTTPException(status_code=500, detail=str(exc))
-
-
-@app.post("/plugins/install-zip")
-async def install_plugin_zip(file: UploadFile = File(...), force: bool = Form(False)):
-    """Install an external plugin from a zip file upload and reload the system."""
-    temp_zip_path = None
-    try:
-        if not file.filename or not file.filename.lower().endswith(".zip"):
-            raise HTTPException(status_code=400, detail="Uploaded file must be a .zip archive")
-
-        install_name = os.path.splitext(os.path.basename(file.filename))[0]
-
-        with tempfile.NamedTemporaryFile(delete=False, suffix=".zip") as temp_zip:
-            temp_zip.write(await file.read())
-            temp_zip_path = temp_zip.name
-
-        plugin_name = plugin_manager.install_external_plugin_zip(temp_zip_path, overwrite=force, install_name=install_name)
-        plugin_manager.reload_plugins()
-        return {
-            "status": "success",
-            "message": f"Zip plugin installed and loaded: {plugin_name}",
-            "plugin": plugin_name
-        }
-    except FileExistsError as exc:
-        logger.warning("Zip plugin install skipped: %s", exc)
-        raise HTTPException(status_code=409, detail=str(exc))
-    except HTTPException:
-        raise
-    except Exception as exc:
-        logger.exception("Failed to install zip plugin: %s", exc)
-        raise HTTPException(status_code=500, detail=str(exc))
-    finally:
-        if temp_zip_path and os.path.exists(temp_zip_path):
-            os.remove(temp_zip_path)
-
-
-@app.post("/email/send")
-async def send_email(payload: EmailPayload):
-    """Trigger an email event through the plugin system asynchronously."""
-    try:
-        email_data = {
-            "from": payload.from_addr,
-            "subject": payload.subject
-        }
-        
-        # Emit the event asynchronously - all plugins process concurrently
-        await event_bus.emit("email.received", email_data)
-        
-        logger.info("Email event triggered via API (async): from=%s, subject=%s", payload.from_addr, payload.subject)
-        return {
-            "status": "success",
-            "message": "Email event sent to all listeners (processed concurrently)",
-            "data": email_data
-        }
-    except Exception as exc:
-        logger.exception("Failed to send email event: %s", exc)
-        raise HTTPException(status_code=500, detail=str(exc))
-
-
-@app.get("/email/logs")
-async def get_email_logs():
-    """Retrieve archived email logs from file_logger plugin."""
-    try:
-        log_file = "email_archive.log"
-        if not os.path.exists(log_file):
-            return {"logs": [], "message": "No email logs found"}
-        
-        import json
-        logs = []
-        with open(log_file, "r") as f:
-            for line in f:
-                try:
-                    logs.append(json.loads(line))
-                except json.JSONDecodeError:
-                    continue
-        
-        return {"logs": logs, "count": len(logs)}
-    except Exception as exc:
-        logger.exception("Failed to read email logs: %s", exc)
-        raise HTTPException(status_code=500, detail=str(exc))
-
-
-@app.get("/status")
-async def get_status():
-    """Get overall system status."""
-    try:
-        return {
-            "status": "running",
-            "plugins_loaded": len(plugin_manager.plugins),
-            "event_listeners": {event: len(listeners) for event, listeners in event_bus.listeners.items()}
-        }
-    except Exception as exc:
-        logger.exception("Failed to get status: %s", exc)
-        raise HTTPException(status_code=500, detail=str(exc))
 
 
 if __name__ == "__main__":
