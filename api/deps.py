@@ -12,6 +12,6 @@ setup_logging()
 logger = get_logger("api")
 
 # Shared instances for controllers
-event_bus = AsyncEventBus()
+event_bus = AsyncEventBus(use_queue=True)
 plugin_manager = PluginManager(event_bus)
 plugin_manager.load_plugins()
