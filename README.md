@@ -10,6 +10,14 @@ A modular plugin-based workflow automation system with a REST API built with Fas
 python main.py
 ```
 
+### 1b. Run the async CLI version (concurrent event handling)
+
+```bash
+python main_async.py
+```
+
+Demonstrates all plugins processing events concurrently using `asyncio`.
+
 ### 2. Run the REST API server
 
 ```bash
@@ -166,8 +174,44 @@ class PluginImpl(Plugin):
 - `fastapi` — REST framework
 - `uvicorn` — ASGI server
 - `pydantic` — Data validation
+- `PyYAML` — Config file parsing
 
 Install with:
 ```bash
 pip install -r requirements.txt
 ```
+
+## Async Event Handling
+
+The system includes two event bus implementations:
+
+### Synchronous Event Bus (`core/event_bus.py`)
+- Default in `main.py` and `api/server.py` (original)
+- Plugins process events sequentially
+
+### Asynchronous Event Bus (`core/async_event_bus.py`)
+- Used in `main_async.py` and new API server
+- All plugins process events **concurrently** using `asyncio`
+- Better performance for I/O-bound operations
+- Automatic sync-to-async wrapping for plugins using sync handlers
+
+**Example: Async plugin handler**
+
+```python
+import asyncio
+
+class PluginImpl(Plugin):
+    def initialize(self, event_bus):
+        # Register async handler
+        event_bus.subscribe("email.received", self.handle_email_async)
+    
+    async def handle_email_async(self, data):
+        # This handler runs concurrently with other handlers
+        await asyncio.sleep(1)  # Simulate I/O
+        self.logger.info("Processing complete")
+```
+
+The async event bus automatically handles:
+- Running multiple handlers concurrently
+- Mixing sync and async handlers
+- Exception handling across all concurrent tasks
