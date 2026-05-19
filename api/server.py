@@ -3,19 +3,20 @@ from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 import sys
 import os
+import asyncio
 
 # Add project root to path so we can import core modules
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from core.plugin_manager import PluginManager
-from core.event_bus import EventBus
+from core.async_event_bus import AsyncEventBus
 from core.logging_utils import get_logger, setup_logging
 
 setup_logging()
 logger = get_logger("api")
 
-# Initialize the plugin system
-event_bus = EventBus()
+# Initialize the plugin system with async event bus
+event_bus = AsyncEventBus()
 plugin_manager = PluginManager(event_bus)
 plugin_manager.load_plugins()
 
@@ -55,20 +56,20 @@ async def list_plugins():
 
 @app.post("/email/send")
 async def send_email(payload: EmailPayload):
-    """Trigger an email event through the plugin system."""
+    """Trigger an email event through the plugin system asynchronously."""
     try:
         email_data = {
             "from": payload.from_addr,
             "subject": payload.subject
         }
         
-        # Emit the event through the bus
-        event_bus.emit("email.received", email_data)
+        # Emit the event asynchronously - all plugins process concurrently
+        await event_bus.emit("email.received", email_data)
         
-        logger.info("Email event triggered via API: from=%s, subject=%s", payload.from_addr, payload.subject)
+        logger.info("Email event triggered via API (async): from=%s, subject=%s", payload.from_addr, payload.subject)
         return {
             "status": "success",
-            "message": "Email event sent to all listeners",
+            "message": "Email event sent to all listeners (processed concurrently)",
             "data": email_data
         }
     except Exception as exc:
