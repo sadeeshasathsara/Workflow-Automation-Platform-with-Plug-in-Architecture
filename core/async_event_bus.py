@@ -1,4 +1,5 @@
 import asyncio
+import inspect
 from core.logging_utils import get_logger
 
 logger = get_logger("async_event_bus")
@@ -31,7 +32,7 @@ class AsyncEventBus:
         for callback in self.listeners[event]:
             try:
                 # Check if callback is a coroutine function
-                if asyncio.iscoroutinefunction(callback):
+                if inspect.iscoroutinefunction(callback):
                     tasks.append(callback(data))
                 else:
                     # Wrap sync callbacks in a coroutine
