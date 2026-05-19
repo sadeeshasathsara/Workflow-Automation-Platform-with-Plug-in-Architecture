@@ -10,6 +10,7 @@ from api.deps import logger
 from api.controllers.plugins import router as plugins_router
 from api.controllers.email import router as email_router
 from api.controllers.status import router as status_router
+from api.controllers.flows import router as flows_router
 
 setup_logging()
 
@@ -23,6 +24,7 @@ app = FastAPI(
 app.include_router(plugins_router)
 app.include_router(email_router)
 app.include_router(status_router)
+app.include_router(flows_router)
 
 
 @app.get("/")

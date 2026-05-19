@@ -33,3 +33,27 @@ npm run dev
 Notes
 - This scaffold does not run installs automatically. Run `npm install` inside `www`.
 - `shadcn-ui` is a component generation workflow that requires Node. Use `npx shadcn-ui` to bootstrap component files into `src/components`.
+
+Flow Editor
+
+This scaffold includes a visual Flow Editor (n8n-like) at the app root. It uses `react-flow-renderer` and includes a sample flow plus simple Save/Load persistence.
+
+- Save/Load: uses `localStorage` under the key `savedFlow`. The editor also attempts to POST saved flows to `POST /flows/save` and will call `GET /flows/load` when loading if the API is available.
+- API endpoints (backend stubs): `POST /flows/save` and `GET /flows/load` are implemented in the project's FastAPI server to persist flows to `data/flows.json`.
+
+To run the UI:
+
+```bash
+cd www
+npm install
+npm run dev
+```
+
+To run the backend API (optional, enables plugin listing and server-side save/load):
+
+```bash
+python -m api.server
+# or run via uvicorn
+uvicorn api.server:app --reload --port 8000
+```
+
