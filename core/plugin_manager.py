@@ -49,14 +49,24 @@ class PluginManager:
 
             self.logger.info("Loaded plugin: %s", plugin_name_key)
 
-    def install_external_plugin(self, source_path):
+    def install_external_plugin(self, source_path, overwrite=False):
         """Install a plugin from outside the repo into the plugins directory."""
         try:
-            plugin_name, destination_path = self.installer.install_from_path(source_path)
+            plugin_name, destination_path = self.installer.install_from_path(source_path, overwrite=overwrite)
             self.logger.info("External plugin installed: %s -> %s", plugin_name, destination_path)
             return plugin_name
         except Exception as exc:
             self.logger.exception("Failed to install external plugin from %s: %s", source_path, exc)
+            raise
+
+    def install_external_plugin_zip(self, zip_path, overwrite=False, install_name=None):
+        """Install a plugin from a zip archive into the plugins directory."""
+        try:
+            plugin_name, destination_path = self.installer.install_from_zip(zip_path, overwrite=overwrite, install_name=install_name)
+            self.logger.info("External plugin zip installed: %s -> %s", plugin_name, destination_path)
+            return plugin_name
+        except Exception as exc:
+            self.logger.exception("Failed to install external plugin zip from %s: %s", zip_path, exc)
             raise
 
     def reload_plugins(self):

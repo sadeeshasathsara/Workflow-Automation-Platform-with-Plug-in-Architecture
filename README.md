@@ -94,7 +94,27 @@ curl -X POST http://localhost:8000/plugins/install \
     -d '{"source_path":"external_plugins/sample_external_plugin"}'
 ```
 
+If the plugin is already installed, pass `force: true` to replace the existing copy:
+
+```bash
+curl -X POST http://localhost:8000/plugins/install \
+    -H "Content-Type: application/json" \
+    -d '{"source_path":"external_plugins/sample_external_plugin","force":true}'
+```
+
 The API copies the folder into `plugins/`, reloads the plugin manager, and loads it into the microkernel.
+
+### Example: install a plugin from a zip file
+
+If you have a zip archive like `external_plugins/whatsapp_plugin.zip`, upload it directly:
+
+```bash
+curl -X POST http://localhost:8000/plugins/install-zip \
+    -F "file=@external_plugins/whatsapp_plugin.zip" \
+    -F "force=true"
+```
+
+The server extracts the archive safely, finds the plugin folder, installs it into `plugins/`, and reloads the plugin manager.
 
 ### Example plugin contract
 
