@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  redis:
+    image: redis:7
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+
+  api:
+    build: .
+    command: uvicorn api.server:app --host 0.0.0.0 --port 8000
+    volumes:
+      - ./:/app
+      - ./data:/app/data
+    ports:
+      - "8000:8000"
+    environment:
+      - REDIS_URL=redis://redis:6379/0
+      - FLOWS_STORE=/app/data/flows.json
+    depends_on:
+      - redis
+
+  worker:
+    build: .
+    command: python -m core.sql_worker_cli
+    volumes:
+      - ./:/app
+      - ./data:/app/data
+    environment:
+      - REDIS_URL=redis://redis:6379/0
+    depends_on:
+      - api
+      - redis
+
+  web:
+    image: node:20
+    working_dir: /app
+    volumes:
+      - ./www:/app
+    ports:
+      - "5173:5173"
+    command: sh -lc "npm install && npm run dev"
+    depends_on:
+      - api
+
+volumes:
+  data:

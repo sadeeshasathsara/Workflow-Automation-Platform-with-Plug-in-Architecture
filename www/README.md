@@ -57,3 +57,15 @@ python -m api.server
 uvicorn api.server:app --reload --port 8000
 ```
 
+Docker (recommended for easy setup)
+
+Build and run with Docker Compose (this will start Redis, API, worker, and the web dev server):
+
+```bash
+docker compose up --build
+```
+
+- API will be available at http://localhost:8000
+- Web dev server will be available at http://localhost:5173
+
+
