@@ -2,6 +2,7 @@ import importlib
 import os
 
 from core.logging_utils import get_logger
+from core.plugin_installer import PluginInstaller
 
 class PluginManager:
 
@@ -11,6 +12,7 @@ class PluginManager:
         self.plugins = {}
         self.event_bus = event_bus
         self.logger = get_logger("plugin_manager")
+        self.installer = PluginInstaller()
 
     def load_plugins(self):
 
@@ -46,3 +48,18 @@ class PluginManager:
             self.plugins[plugin_name_key] = plugin
 
             self.logger.info("Loaded plugin: %s", plugin_name_key)
+
+    def install_external_plugin(self, source_path):
+        """Install a plugin from outside the repo into the plugins directory."""
+        try:
+            plugin_name, destination_path = self.installer.install_from_path(source_path)
+            self.logger.info("External plugin installed: %s -> %s", plugin_name, destination_path)
+            return plugin_name
+        except Exception as exc:
+            self.logger.exception("Failed to install external plugin from %s: %s", source_path, exc)
+            raise
+
+    def reload_plugins(self):
+        """Clear and reload all installed plugins."""
+        self.plugins = {}
+        self.load_plugins()

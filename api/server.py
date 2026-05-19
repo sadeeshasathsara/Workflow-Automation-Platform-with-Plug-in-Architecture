@@ -11,6 +11,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from core.plugin_manager import PluginManager
 from core.async_event_bus import AsyncEventBus
 from core.logging_utils import get_logger, setup_logging
+from api.plugin_models import ExternalPluginInstallRequest
 
 setup_logging()
 logger = get_logger("api")
@@ -51,6 +52,22 @@ async def list_plugins():
         return {"plugins": plugins_list, "count": len(plugins_list)}
     except Exception as exc:
         logger.exception("Failed to list plugins: %s", exc)
+        raise HTTPException(status_code=500, detail=str(exc))
+
+
+@app.post("/plugins/install")
+async def install_plugin(request: ExternalPluginInstallRequest):
+    """Install an external plugin from a folder on disk and reload the system."""
+    try:
+        plugin_name = plugin_manager.install_external_plugin(request.source_path)
+        plugin_manager.reload_plugins()
+        return {
+            "status": "success",
+            "message": f"Plugin installed and loaded: {plugin_name}",
+            "plugin": plugin_name
+        }
+    except Exception as exc:
+        logger.exception("Failed to install plugin: %s", exc)
         raise HTTPException(status_code=500, detail=str(exc))
 
 

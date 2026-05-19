@@ -65,6 +65,53 @@ The system automatically discovers and loads plugins from the `plugins/` folder:
 - **file_logger** — Archives emails to `email_archive.log`
 - **notification** — Sends system notifications
 
+## Installing External Plugins
+
+You can install plugins from outside the repository by copying a plugin folder into `plugins/`.
+
+### Requirements for an external plugin
+
+Your plugin folder should include:
+
+- `plugin.py` with a `PluginImpl` class
+- optional `plugin.yml` or `plugin.yaml` metadata file
+
+### Example: install a plugin from disk
+
+If you have a plugin folder like:
+
+```text
+external_plugins/sample_external_plugin/
+    ├── plugin.py
+    └── plugin.yml
+```
+
+Install it via the API:
+
+```bash
+curl -X POST http://localhost:8000/plugins/install \
+    -H "Content-Type: application/json" \
+    -d '{"source_path":"external_plugins/sample_external_plugin"}'
+```
+
+The API copies the folder into `plugins/`, reloads the plugin manager, and loads it into the microkernel.
+
+### Example plugin contract
+
+```python
+from core.interfaces.plugin import Plugin
+
+class PluginImpl(Plugin):
+        def name(self):
+                return "my_external_plugin"
+
+        def initialize(self, event_bus):
+                event_bus.subscribe("email.received", self.handle_email)
+
+        def handle_email(self, data):
+                print("external plugin received:", data)
+```
+
 ## Architecture
 
 ```
