@@ -100,23 +100,66 @@ Create a new folder under `plugins/` with a `plugin.py` containing a `PluginImpl
 ```python
 from core.interfaces.plugin import Plugin
 from core.logging_utils import get_logger
+from core.config import get_config_loader
 
 class PluginImpl(Plugin):
     def __init__(self):
         self.logger = get_logger("my_plugin")
+        self.config = get_config_loader().get("my_plugin", default={})
 
     def name(self):
         return "my_plugin"
 
     def initialize(self, event_bus):
-        event_bus.subscribe("email.received", self.handle_email)
-        self.logger.info("My plugin initialized")
+        enabled = self.config.get("enabled", True)
+        if enabled:
+            event_bus.subscribe("email.received", self.handle_email)
+            self.logger.info("My plugin initialized")
 
     def handle_email(self, data):
         self.logger.info("Email received: %s", data)
 ```
 
 The plugin will be auto-discovered on startup!
+
+## Plugin Configuration
+
+Plugins can be configured via YAML files in the `config/` directory. Each plugin reads its own config file.
+
+### Config file structure
+
+Create `config/<plugin_name>.yml`:
+
+```yaml
+# config/my_plugin.yml
+enabled: true
+api_key: "your-api-key"
+timeout: 30
+debug_mode: false
+```
+
+### Accessing config in plugins
+
+```python
+from core.config import get_config_loader
+
+class PluginImpl(Plugin):
+    def __init__(self):
+        self.config = get_config_loader().get("my_plugin", default={})
+    
+    def initialize(self, event_bus):
+        api_key = self.config.get("api_key", "default-key")
+        timeout = self.config.get("timeout", 10)
+        enabled = self.config.get("enabled", True)
+```
+
+### Available plugin configs
+
+- `config/gmail.yml` — Email settings (sender, polling interval)
+- `config/slack.yml` — Slack webhook URL, channel
+- `config/logger.yml` — Log level and formatting
+- `config/file_logger.yml` — Log file path, rotation settings
+- `config/notification.yml` — Notification preferences
 
 ## Dependencies
 
