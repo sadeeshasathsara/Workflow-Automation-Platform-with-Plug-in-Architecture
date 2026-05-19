@@ -1,0 +1,6 @@
+# Gmail plugin configuration
+enabled: true
+simulate_email: true
+default_from: "noreply@example.com"
+poll_interval: 30  # seconds
+max_retries: 3

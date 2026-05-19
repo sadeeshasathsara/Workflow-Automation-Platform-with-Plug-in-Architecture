@@ -1,0 +1,5 @@
+# Logger plugin configuration
+enabled: true
+log_level: "INFO"
+include_timestamp: false
+include_metadata: false

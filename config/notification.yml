@@ -1,0 +1,5 @@
+# Notification plugin configuration
+enabled: true
+use_system_notifications: true
+notification_title: "New Email"
+sound_enabled: false

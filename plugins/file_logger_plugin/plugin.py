@@ -1,5 +1,6 @@
 from core.interfaces.plugin import Plugin
 from core.logging_utils import get_logger
+from core.config import get_config_loader
 import json
 from datetime import datetime
 
@@ -8,7 +9,8 @@ class PluginImpl(Plugin):
 
     def __init__(self):
         self.logger = get_logger("file_logger")
-        self.log_file = "email_archive.log"
+        self.config = get_config_loader().get("file_logger", default={})
+        self.log_file = self.config.get("log_file", "email_archive.log")
 
     def name(self):
         return "file_logger"

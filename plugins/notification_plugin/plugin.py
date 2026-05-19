@@ -1,11 +1,13 @@
 from core.interfaces.plugin import Plugin
 from core.logging_utils import get_logger
+from core.config import get_config_loader
 
 # Plugin that sends system notifications for important email events.
 class PluginImpl(Plugin):
 
     def __init__(self):
         self.logger = get_logger("notification")
+        self.config = get_config_loader().get("notification", default={})
 
     def name(self):
         return "notification"

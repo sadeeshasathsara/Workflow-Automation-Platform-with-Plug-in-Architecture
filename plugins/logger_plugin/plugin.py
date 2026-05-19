@@ -1,11 +1,13 @@
 from core.interfaces.plugin import Plugin
 from core.logging_utils import get_logger
+from core.config import get_config_loader
 import json
 
 class PluginImpl(Plugin):
 
     def __init__(self):
         self.logger = get_logger("logger")
+        self.config = get_config_loader().get("logger", default={})
 
     def name(self):
         return "logger"
