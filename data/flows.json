@@ -1,0 +1,55 @@
+{
+  "nodes": [
+    {
+      "id": "trigger",
+      "type": "input",
+      "data": {
+        "label": "Email Trigger"
+      },
+      "position": {
+        "x": 40,
+        "y": 100
+      },
+      "width": 150,
+      "height": 40,
+      "selected": true
+    },
+    {
+      "id": "logger",
+      "data": {
+        "label": "Logger Plugin"
+      },
+      "position": {
+        "x": 320,
+        "y": 60
+      },
+      "width": 150,
+      "height": 40
+    },
+    {
+      "id": "notify",
+      "data": {
+        "label": "Notify Action"
+      },
+      "position": {
+        "x": 320,
+        "y": 170
+      },
+      "width": 150,
+      "height": 40
+    }
+  ],
+  "edges": [
+    {
+      "id": "e-trigger-logger",
+      "source": "trigger",
+      "target": "logger",
+      "animated": true
+    },
+    {
+      "id": "e-trigger-notify",
+      "source": "trigger",
+      "target": "notify"
+    }
+  ]
+}

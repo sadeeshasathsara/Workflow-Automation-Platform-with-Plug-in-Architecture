@@ -1,14 +1,25 @@
 <!doctype html>
-<html>
+<html lang="en">
 
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Workflow Automation UI</title>
+    <meta name="description" content="Visual workflow automation platform with plugin architecture — design, connect, and execute workflows in a professional drag-and-drop canvas." />
+    <title>FlowForge — Workflow Automation Platform</title>
+
+    <!-- Inter font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+    <style>
+        /* Prevent FOUC */
+        html { background: #0f0f1a; }
+    </style>
 </head>
 
-<body>
-    <div id="root"></div>
+<body style="margin:0;padding:0;height:100%">
+    <div id="root" style="height:100vh"></div>
     <script type="module" src="/src/main.tsx"></script>
 </body>
 
