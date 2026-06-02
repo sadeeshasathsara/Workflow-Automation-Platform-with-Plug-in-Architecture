@@ -19,11 +19,25 @@ html, body, #root {
 ::-webkit-scrollbar-thumb:hover { background: #ff6d5a; }
 
 /* ── React-Flow canvas overrides ──────────────────── */
+.react-flow {
+    width: 100% !important;
+    height: 100% !important;
+}
+.react-flow__renderer,
+.react-flow__viewport {
+    width: 100% !important;
+    height: 100% !important;
+}
 .react-flow__background       { background: #0f0f1a !important; }
 
 .react-flow__edge-path        {
     stroke: #ff6d5a !important;
     stroke-width: 2 !important;
+    fill: none !important;
+}
+
+.react-flow__edge-marker {
+    fill: #ff6d5a !important;
 }
 
 @keyframes dashdraw {
@@ -39,6 +53,27 @@ html, body, #root {
     border: 2px solid #0f0f1a !important;
     width: 10px !important;
     height: 10px !important;
+    position: relative;
+    transition: transform 0.15s ease, background-color 0.15s ease !important;
+    touch-action: none !important;
+}
+/* Touch target expansion for touch screen fingers */
+.react-flow__handle::after {
+    content: '';
+    position: absolute;
+    top: -16px;
+    left: -16px;
+    right: -16px;
+    bottom: -16px;
+    background: transparent;
+    cursor: pointer;
+    z-index: 10;
+    touch-action: none !important;
+}
+.react-flow__handle:hover {
+    transform: scale(1.35) !important;
+    background: #50fa7b !important;
+    box-shadow: 0 0 8px #50fa7b !important;
 }
 
 .react-flow__controls {
@@ -76,18 +111,30 @@ html, body, #root {
     padding: 10px 16px !important;
     box-shadow: 0 4px 20px rgba(0,0,0,0.4) !important;
     min-width: 140px !important;
+    cursor: pointer !important;
     transition: border-color 0.15s, box-shadow 0.15s !important;
+}
+.react-flow__node-input {
+    border-left: 4px solid #ff6d5a !important;
+}
+.react-flow__node-default,
+.react-flow__node-output {
+    border-left: 4px solid #6e6eff !important;
 }
 .react-flow__node-default:hover,
 .react-flow__node-input:hover,
 .react-flow__node-output:hover {
-    border-color: #ff6d5a !important;
+    border-top-color: #ff6d5a !important;
+    border-right-color: #ff6d5a !important;
+    border-bottom-color: #ff6d5a !important;
     box-shadow: 0 0 0 2px rgba(255,109,90,0.2), 0 4px 20px rgba(0,0,0,0.5) !important;
 }
 .react-flow__node.selected .react-flow__node-default,
 .react-flow__node-input.selected,
 .react-flow__node-output.selected {
-    border-color: #ff6d5a !important;
+    border-top-color: #ff6d5a !important;
+    border-right-color: #ff6d5a !important;
+    border-bottom-color: #ff6d5a !important;
     box-shadow: 0 0 0 3px rgba(255,109,90,0.3) !important;
 }
 
@@ -113,3 +160,125 @@ html, body, #root {
 .animate-slide-in   { animation: slide-in-right 0.25s ease both; }
 .animate-fade-up    { animation: fade-up 0.2s ease both; }
 .animate-toast      { animation: toast-in 0.3s cubic-bezier(0.34,1.56,0.64,1) both; }
+
+/* Global interactive styling */
+button:disabled, button[disabled] {
+    cursor: not-allowed !important;
+}
+
+/* ── Live Execution Node States ───────────────────── */
+
+/* Pending: dim node while it waits for its turn */
+.react-flow__node.exec-pending .react-flow__node-default,
+.react-flow__node.exec-pending .react-flow__node-input,
+.react-flow__node.exec-pending .react-flow__node-output,
+.react-flow__node-default.exec-pending,
+.react-flow__node-input.exec-pending,
+.react-flow__node-output.exec-pending {
+    opacity: 0.45 !important;
+    filter: grayscale(0.4) !important;
+    transition: opacity 0.3s ease, filter 0.3s ease !important;
+}
+
+/* Running: pulsing bright neon yellow glow with animated expanding dashed outline */
+@keyframes exec-pulse {
+    0%, 100% {
+        box-shadow: 0 0 6px 2px #ffb832, 0 0 20px 4px rgba(255, 184, 50, 0.45) !important;
+        border-color: #ffb832 !important;
+    }
+    50% {
+        box-shadow: 0 0 16px 4px #ffb832, 0 0 35px 8px rgba(255, 184, 50, 0.8) !important;
+        border-color: #ffffff !important;
+    }
+}
+@keyframes border-marquee {
+    0% {
+        outline-offset: 1px;
+        outline-color: #ffb832;
+    }
+    50% {
+        outline-color: #ffffff;
+    }
+    100% {
+        outline-offset: 5px;
+        outline-color: #ffb832;
+    }
+}
+.react-flow__node.exec-running .react-flow__node-default,
+.react-flow__node.exec-running .react-flow__node-input,
+.react-flow__node.exec-running .react-flow__node-output,
+.react-flow__node-default.exec-running,
+.react-flow__node-input.exec-running,
+.react-flow__node-output.exec-running {
+    border-left: 4px solid #ffb832 !important;
+    border-top: 1px solid #ffb832 !important;
+    border-right: 1px solid #ffb832 !important;
+    border-bottom: 1px solid #ffb832 !important;
+    opacity: 1 !important;
+    filter: none !important;
+    outline: 2px dashed #ffb832 !important;
+    animation: exec-pulse 1.2s ease-in-out infinite, border-marquee 0.8s linear infinite !important;
+}
+
+/* Success: glowing neon green border */
+.react-flow__node.exec-success .react-flow__node-default,
+.react-flow__node.exec-success .react-flow__node-input,
+.react-flow__node.exec-success .react-flow__node-output,
+.react-flow__node-default.exec-success,
+.react-flow__node-input.exec-success,
+.react-flow__node-output.exec-success {
+    border-left: 4px solid #50fa7b !important;
+    border-top: 1px solid #50fa7b !important;
+    border-right: 1px solid #50fa7b !important;
+    border-bottom: 1px solid #50fa7b !important;
+    box-shadow: 0 0 5px 1px #50fa7b, 0 0 18px 3px rgba(80, 250, 123, 0.35) !important;
+    opacity: 1 !important;
+    filter: none !important;
+    animation: none !important;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
+}
+
+/* Error: glowing neon red border */
+.react-flow__node.exec-error .react-flow__node-default,
+.react-flow__node.exec-error .react-flow__node-input,
+.react-flow__node.exec-error .react-flow__node-output,
+.react-flow__node-default.exec-error,
+.react-flow__node-input.exec-error,
+.react-flow__node-output.exec-error {
+    border-left: 4px solid #ff5555 !important;
+    border-top: 1px solid #ff5555 !important;
+    border-right: 1px solid #ff5555 !important;
+    border-bottom: 1px solid #ff5555 !important;
+    box-shadow: 0 0 5px 1px #ff5555, 0 0 18px 3px rgba(255, 85, 85, 0.35) !important;
+    opacity: 1 !important;
+    filter: none !important;
+    animation: none !important;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
+}
+
+/* ── Edge Data Labels (Pill bubbles floating on straight wires) ── */
+.react-flow__edge-text {
+    fill: #ffffff !important;
+    font-size: 10px !important;
+    font-weight: 600 !important;
+    font-family: 'Inter', sans-serif !important;
+}
+.react-flow__edge-textbg {
+    fill: #13131f !important;
+    rx: 8px !important;
+    ry: 8px !important;
+    stroke: #ff6d5a88 !important;
+    stroke-width: 1.5px !important;
+    fill-opacity: 0.98 !important;
+}
+
+/* ── Selected Edge styling ── */
+.react-flow__edge.selected .react-flow__edge-path {
+    stroke: #ffb832 !important;
+    stroke-width: 3.5 !important;
+    filter: drop-shadow(0 0 5px #ffb832) !important;
+    transition: stroke 0.2s ease, stroke-width 0.2s ease, filter 0.2s ease !important;
+}
+.react-flow__edge.selected .react-flow__edge-marker {
+    fill: #ffb832 !important;
+}
