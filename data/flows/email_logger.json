@@ -107,7 +107,8 @@
       "target": "logger",
       "targetHandle": null,
       "type": "smoothstep",
-      "id": "reactflow__edge-logger-logger"
+      "id": "reactflow__edge-logger-logger",
+      "animated": false
     },
     {
       "source": "trigger",
@@ -115,7 +116,8 @@
       "target": "node-12",
       "targetHandle": null,
       "type": "smoothstep",
-      "id": "reactflow__edge-trigger-node-12"
+      "id": "reactflow__edge-trigger-node-12",
+      "animated": false
     },
     {
       "source": "node-12",
@@ -123,7 +125,8 @@
       "target": "node-11",
       "targetHandle": null,
       "type": "smoothstep",
-      "id": "reactflow__edge-node-12-node-11"
+      "id": "reactflow__edge-node-12-node-11",
+      "animated": false
     },
     {
       "source": "node-12",
@@ -131,7 +134,8 @@
       "target": "logger",
       "targetHandle": null,
       "type": "smoothstep",
-      "id": "reactflow__edge-node-12-logger"
+      "id": "reactflow__edge-node-12-logger",
+      "animated": false
     },
     {
       "source": "node-12",
@@ -140,7 +144,8 @@
       "targetHandle": null,
       "type": "smoothstep",
       "id": "reactflow__edge-node-12-notify",
-      "selected": false
+      "selected": false,
+      "animated": false
     }
   ],
   "active": false,
