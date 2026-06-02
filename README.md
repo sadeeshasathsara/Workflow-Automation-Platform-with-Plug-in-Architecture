@@ -1,6 +1,8 @@
 # Workflow Automation Platform with Plug-in Architecture
 
-A modular, plugin-based workflow automation system featuring a high-performance FastAPI backend, a dynamic React + Vite web-based flow editor canvas, and robust concurrent event dispatching.
+A modular, plugin-based workflow automation system using the mikrokernel architecture featuring a high-performance FastAPI backend, a dynamic React + Vite web-based flow editor canvas, and robust concurrent event dispatching.
+
+<img width="1919" height="1004" alt="image" src="https://github.com/user-attachments/assets/a7202439-c9d3-4e87-9330-49339a5f0faa" />
 
 ---
 
