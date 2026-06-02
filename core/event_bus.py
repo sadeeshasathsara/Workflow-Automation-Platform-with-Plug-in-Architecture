@@ -17,6 +17,19 @@ class EventBus:
 
         self.listeners[event].append(callback)
     
+    def unsubscribe(self, event: str, callback) -> bool:
+        """Remove a specific callback for an event. Returns True if found and removed."""
+        if event in self.listeners:
+            try:
+                self.listeners[event].remove(callback)
+                if not self.listeners[event]:
+                    del self.listeners[event]
+                return True
+            except ValueError:
+                pass
+        return False
+
+    
     def emit(self, event, data):
 
         # Notify every subscriber with the payload attached to this event.

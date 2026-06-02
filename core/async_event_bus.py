@@ -97,7 +97,44 @@ class AsyncEventBus:
 
         self.listeners[event].append(callback)
 
+    def unsubscribe(self, event: str, callback) -> bool:
+        """Remove a specific callback or listener descriptor for an event. Returns True if found and removed."""
+        if event in self.listeners:
+            removed = False
+            plugin_tuple = None
+            try:
+                if self.use_queue and hasattr(callback, "__self__") and hasattr(callback, "__func__"):
+                    instance = callback.__self__
+                    method_name = callback.__func__.__name__
+                    plugin_name = None
+                    if hasattr(instance, "name") and callable(instance.name):
+                        plugin_name = instance.name()
+                    if plugin_name:
+                        plugin_tuple = ("plugin", plugin_name, method_name)
+            except Exception:
+                pass
+
+            to_remove = []
+            for listener in self.listeners[event]:
+                if listener == callback:
+                    to_remove.append(listener)
+                elif plugin_tuple and listener == plugin_tuple:
+                    to_remove.append(listener)
+            
+            for item in to_remove:
+                try:
+                    self.listeners[event].remove(item)
+                    removed = True
+                except ValueError:
+                    pass
+            
+            if not self.listeners[event]:
+                del self.listeners[event]
+            return removed
+        return False
+
     async def emit(self, event, data):
+
         """Emit an event and either enqueue jobs or run handlers locally."""
         if event not in self.listeners:
             return
