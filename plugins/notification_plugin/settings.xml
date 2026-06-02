@@ -1,0 +1,41 @@
+<settings>
+    <navigation>
+        <menu id="notification_settings" title="Notification" icon="🔔">
+            <field name="title" type="string" required="false" display_name="Default Title" placeholder="e.g. New Event">
+                <description>Default title shown in the notification popup. Can be overridden per-flow node.</description>
+            </field>
+            <field name="message" type="text" required="false" display_name="Default Message" placeholder="e.g. You have a new email from {{from}}">
+                <description>Default body text of the notification. Use {{field}} placeholders to inject values from the trigger output (e.g. {{from}}, {{subject}}).</description>
+            </field>
+            <field name="icon" type="string" required="false" display_name="Notification Icon" placeholder="e.g. 🔔 or leave blank">
+                <description>Optional emoji or icon character shown alongside the notification title.</description>
+            </field>
+            <divider />
+            <button id="save_notification" type="save" display_name="Save Settings" style="primary" />
+            <button id="clear_notification" type="clear" display_name="Clear Settings" style="danger" />
+        </menu>
+        <menu id="behavior" title="Behavior" icon="⚙️">
+            <field name="sound_enabled" type="boolean" required="false" display_name="Enable Sound" default="false">
+                <description>Play a system sound when a notification is triggered.</description>
+            </field>
+            <field name="log_notifications" type="boolean" required="false" display_name="Log to Console" default="true">
+                <description>Write notification events to the workflow log for debugging and audit.</description>
+            </field>
+            <field name="max_message_length" type="number" required="false" display_name="Max Message Length" default="200" placeholder="e.g. 200">
+                <description>Truncate long messages to this character limit before displaying the notification.</description>
+            </field>
+            <field name="notification_level" type="select" required="false" display_name="Notification Level" default="info">
+                <option>info</option>
+                <option>success</option>
+                <option>warning</option>
+                <option>error</option>
+                <description>Severity level that controls the visual style of the notification badge in the UI.</description>
+            </field>
+            <divider />
+            <info style="info" icon="ℹ️">Settings apply globally to all flows using this plugin. Per-node overrides can be set in the flow node configuration panel.</info>
+            <divider />
+            <button id="save_behavior" type="save" display_name="Save Behavior" style="primary" />
+            <button id="test_notification" type="test" display_name="Test Notification" style="ghost" />
+        </menu>
+    </navigation>
+</settings>

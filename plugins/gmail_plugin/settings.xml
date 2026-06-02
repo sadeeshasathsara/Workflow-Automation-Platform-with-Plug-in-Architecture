@@ -1,0 +1,46 @@
+<settings>
+    <navigation>
+        <menu id="api_credentials" title="API Credentials" icon="🔑">
+            <field name="client_id" type="string" required="true" display_name="OAuth2 Client ID">
+                <description>Google OAuth2 Client ID from Google Cloud Console.</description>
+            </field>
+            <field name="client_secret" type="password" required="true" display_name="OAuth2 Client Secret">
+                <description>Google OAuth2 Client Secret.</description>
+            </field>
+            <button id="save_creds" type="save" display_name="Save Config" style="primary" />
+            <button id="clear_creds" type="clear" display_name="Clear Config" style="danger" />
+        </menu>
+        <menu id="oauth_token" title="OAuth Token" icon="🔄">
+            <field name="refresh_token" type="password" required="true" display_name="Refresh Token">
+                <description>OAuth2 Refresh Token obtained during Gmail authorization.</description>
+            </field>
+            <button id="gmail_oauth" type="oauth_google" display_name="Link Google Account" icon="🔑">
+                <description>Click below to authorize and link your real Gmail inbox securely using the API credentials configured in the first tab.</description>
+            </button>
+            <button id="test_conn" type="test" display_name="Test Connection" style="ghost" />
+            <button id="save_token" type="save" display_name="Save Config" style="primary" />
+            <button id="clear_token" type="clear" display_name="Clear Config" style="danger" />
+        </menu>
+        <menu id="trigger_settings" title="Trigger Behavior" icon="⚙️">
+            <info style="info" icon="💡">Demo Mode allows you to test your flows without authenticating or calling real Google APIs. Once Google OAuth is configured, Demo Mode will be bypassed to poll your real inbox.</info>
+            <field name="simulate_email" type="boolean" required="true" default="false" display_name="Demo Mode (Simulate Emails)">
+                <description>When enabled, the Gmail plugin will generate mock email payloads. If API credentials and OAuth tokens are set, they will override Demo Mode.</description>
+            </field>
+            <field name="poll_interval" type="number" required="true" default="30" display_name="Poll Interval (seconds)">
+                <description>Determines how frequently the workflow engine checks your Gmail inbox for new emails.</description>
+            </field>
+            <field name="label_filter" type="string" required="true" default="INBOX" display_name="Label Filter">
+                <description>Specify the Gmail label (e.g. INBOX, UNREAD, STARRED) to watch for new emails.</description>
+            </field>
+            <field name="default_from" type="string" required="false" default="noreply@example.com" display_name="Simulated Sender Address">
+                <description>The simulated sender's email address when Demo Mode is active.</description>
+            </field>
+            <field name="max_results" type="number" required="true" default="1" display_name="Max Emails per Poll">
+                <description>The maximum number of incoming emails to retrieve in a single polling check.</description>
+            </field>
+            <button id="save_trigger" type="save" display_name="Save Settings" style="primary" />
+            <button id="test_trigger" type="test" display_name="Test Connection" style="ghost" />
+            <button id="clear_trigger" type="clear" display_name="Clear Settings" style="danger" />
+        </menu>
+    </navigation>
+</settings>

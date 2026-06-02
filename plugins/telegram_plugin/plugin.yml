@@ -1,0 +1,4 @@
+name: telegram
+version: 1.0.0
+description: Telegram notification plugin to send bot messages.
+enabled: true

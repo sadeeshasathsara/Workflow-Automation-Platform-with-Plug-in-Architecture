@@ -1,0 +1,20 @@
+<settings>
+    <navigation>
+        <menu id="general" title="Gemini Settings" icon="♊">
+            <field name="api_key" type="password" required="true" display_name="Gemini API Key" placeholder="AIzaSy...">
+                <description>Your Google Gemini API key from Google AI Studio.</description>
+            </field>
+            <field name="model" type="select" required="true" display_name="Gemini Model" default="gemini-2.5-flash">
+                <description>Choose the Gemini model to use.</description>
+                <option>gemini-2.5-flash</option>
+                <option>gemini-2.5-pro</option>
+                <option>gemini-2.0-flash</option>
+                <option>gemini-flash-latest</option>
+                <option>gemini-pro-latest</option>
+            </field>
+            <button id="test_gemini" type="test" display_name="Test Connection" style="ghost" />
+            <button id="save_gemini" type="save" display_name="Save Config" style="primary" />
+            <button id="clear_gemini" type="clear" display_name="Clear Config" style="danger" />
+        </menu>
+    </navigation>
+</settings>

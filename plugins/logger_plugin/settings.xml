@@ -1,0 +1,45 @@
+<settings>
+    <navigation>
+        <menu id="general" title="General Settings" icon="📋">
+            <heading text="Logger Output Format" />
+            <field name="log_level" type="select" display_name="Default Log Level" required="true" default="INFO">
+                <option>DEBUG</option>
+                <option>INFO</option>
+                <option>WARNING</option>
+                <option>ERROR</option>
+                <description>Choose the logging severity level printed to the output stream.</description>
+            </field>
+            <field name="log_format" type="select" display_name="Message Format" required="true" default="JSON">
+                <option>JSON</option>
+                <option>PLAIN</option>
+                <description>JSON outputs a structured object block. PLAIN outputs flat key-value strings.</description>
+            </field>
+            <field name="prefix" type="string" display_name="Message Prefix" placeholder="[WORKFLOW] " default="">
+                <description>An optional prefix prepended to each log entry for easy filtering.</description>
+            </field>
+
+            <divider />
+
+            <heading text="Timestamps" />
+            <field name="include_timestamp" type="boolean" display_name="Add ISO 8601 Timestamp" default="false">
+                <description>Toggles injecting UTC/local ISO timestamps alongside logged metadata.</description>
+            </field>
+
+            <info style="info">Logs are written directly to the application standard output stream (stdout) and are visible in the console.</info>
+
+            <divider />
+
+            <button id="save_creds" type="save" display_name="Save Config" style="primary" />
+            <button id="clear_creds" type="clear" display_name="Reset Defaults" style="danger" />
+        </menu>
+
+        <menu id="view_logs" title="View Logs" icon="📄">
+            <heading text="Live Log Viewer" />
+            <info style="info">Showing the last 100 lines from the archived log file. Click Refresh to reload.</info>
+            <log_viewer filename="email_archive.log" height="320" />
+            <divider />
+            <button id="download_logs" type="download" display_name="Download Log File" style="primary" action="email_archive.log" />
+        </menu>
+    </navigation>
+</settings>
+

@@ -1,0 +1,15 @@
+<settings>
+    <navigation>
+        <menu id="auth" title="Authentication" icon="🔑">
+            <field name="bot_token" type="password" required="true" display_name="Bot Token">
+                <description>Telegram Bot API Token obtained from @BotFather.</description>
+            </field>
+            <field name="default_chat_id" type="string" required="false" display_name="Default Chat ID">
+                <description>Default Chat ID, Group ID, or Channel username to send messages to.</description>
+            </field>
+            <button id="test_telegram" type="test" display_name="Test Connection" style="ghost" />
+            <button id="save_auth" type="save" display_name="Save Config" style="primary" />
+            <button id="clear_auth" type="clear" display_name="Clear Config" style="danger" />
+        </menu>
+    </navigation>
+</settings>

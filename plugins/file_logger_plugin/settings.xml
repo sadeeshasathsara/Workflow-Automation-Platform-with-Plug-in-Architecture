@@ -1,0 +1,26 @@
+<settings>
+    <navigation>
+        <menu id="file_config" title="Archival Target" icon="📁">
+            <heading text="File Destination" />
+            <field name="log_file" type="string" display_name="Log File Path" required="true" placeholder="email_archive.log" default="email_archive.log">
+                <description>Relative or absolute path of the file where events will be archived as JSON lines.</description>
+            </field>
+
+            <info style="warning" icon="⚠️">Make sure the application process has sufficient file system write permissions for the directory path specified.</info>
+
+            <divider />
+
+            <button id="save_creds" type="save" display_name="Save File Location" style="primary" />
+            <button id="clear_creds" type="clear" display_name="Reset Defaults" style="danger" />
+        </menu>
+
+        <menu id="view_logs" title="View Logs" icon="📄">
+            <heading text="Live Log Viewer" />
+            <info style="info">Showing the last 100 lines of the archived log file. Click Refresh to reload the latest entries.</info>
+            <log_viewer filename="email_archive.log" height="340" />
+            <divider />
+            <button id="download_logs" type="download" display_name="Download Log File" style="primary" action="email_archive.log" />
+        </menu>
+    </navigation>
+</settings>
+

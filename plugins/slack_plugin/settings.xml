@@ -1,0 +1,12 @@
+<settings>
+    <navigation>
+        <menu id="general" title="General Settings" icon="💬">
+            <field name="webhook_url" type="string" required="true" display_name="Slack Webhook URL" placeholder="https://hooks.slack.com/services/...">
+                <description>Incoming Webhook URL from Slack API settings.</description>
+            </field>
+            <button id="test_slack" type="test" display_name="Test Connection" style="ghost" />
+            <button id="save_slack" type="save" display_name="Save Config" style="primary" />
+            <button id="clear_slack" type="clear" display_name="Clear Config" style="danger" />
+        </menu>
+    </navigation>
+</settings>

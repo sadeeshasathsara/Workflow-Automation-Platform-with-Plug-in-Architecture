@@ -1,0 +1,5 @@
+name: whatsapp
+version: 1.0.0
+description: WhatsApp notification plugin example
+phone_number: "+15551234567"
+enabled: true

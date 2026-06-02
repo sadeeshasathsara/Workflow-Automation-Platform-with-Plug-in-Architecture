@@ -1,0 +1,19 @@
+<settings>
+    <navigation>
+        <menu id="auth" title="Authentication" icon="🔑">
+            <field name="api_token" type="password" required="true" display_name="WhatsApp API Token">
+                <description>Access token from the WhatsApp Business API.</description>
+            </field>
+            <button id="save_auth" type="save" display_name="Save Config" style="primary" />
+            <button id="clear_auth" type="clear" display_name="Clear Config" style="danger" />
+        </menu>
+        <menu id="meta_settings" title="Meta Settings" icon="⚙️">
+            <field name="phone_number_id" type="string" required="true" display_name="Phone Number ID">
+                <description>The WhatsApp Business phone number ID from Meta Developer Portal.</description>
+            </field>
+            <button id="test_whatsapp" type="test" display_name="Test Connection" style="ghost" />
+            <button id="save_meta" type="save" display_name="Save Config" style="primary" />
+            <button id="clear_meta" type="clear" display_name="Clear Config" style="danger" />
+        </menu>
+    </navigation>
+</settings>
