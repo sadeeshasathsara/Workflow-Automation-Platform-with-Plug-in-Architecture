@@ -21,6 +21,24 @@ app = FastAPI(
     version="1.0.0"
 )
 
+scheduler = None
+
+@app.on_event("startup")
+async def startup_event():
+    global scheduler
+    logger.info("FastAPI starting up — initializing TriggerScheduler...")
+    from api.deps import plugin_manager, flow_engine
+    from core.scheduler import TriggerScheduler
+    scheduler = TriggerScheduler(plugin_manager, flow_engine)
+    scheduler.start()
+
+@app.on_event("shutdown")
+async def shutdown_event():
+    global scheduler
+    logger.info("FastAPI shutting down — stopping TriggerScheduler...")
+    if scheduler:
+        scheduler.stop()
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
@@ -47,5 +65,6 @@ async def root():
 
 if __name__ == "__main__":
     import uvicorn
-    logger.info("Starting API server on http://0.0.0.0:8000")
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    port = int(os.environ.get("PORT", 8000))
+    logger.info("Starting API server on http://0.0.0.0:%d", port)
+    uvicorn.run(app, host="0.0.0.0", port=port)
