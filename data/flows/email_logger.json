@@ -37,7 +37,10 @@
       "type": "default",
       "data": {
         "label": "\ud83d\udd14 System Notifier",
-        "plugin": "notification"
+        "plugin": "notification",
+        "config": {
+          "message": "{{summary}}"
+        }
       },
       "position": {
         "x": 584.0407621216349,
@@ -55,7 +58,10 @@
       "type": "default",
       "data": {
         "label": "\u2708\ufe0f Telegram",
-        "plugin": "telegram"
+        "plugin": "telegram",
+        "config": {
+          "message": "{{summary}}"
+        }
       },
       "position": {
         "x": 327.3078396615647,
@@ -75,7 +81,10 @@
       "type": "default",
       "data": {
         "label": "\u264a Gemini AI",
-        "plugin": "gemini"
+        "plugin": "gemini",
+        "config": {
+          "prompt": "Summarize the following email:\nSubject: {{subject}}\nFrom: {{from}}\nBody: {{body}}"
+        }
       },
       "position": {
         "x": 384.50423944003626,

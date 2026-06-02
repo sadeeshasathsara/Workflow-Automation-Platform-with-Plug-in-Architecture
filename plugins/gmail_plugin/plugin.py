@@ -231,6 +231,36 @@ class PluginImpl(Plugin):
                 }
             return {"ok": False, "error": f"OAuth2 verification failed: {err_str}"}
 
+    def _extract_body(self, part: dict) -> tuple[str, str]:
+        """Recursively extracts plain text and html body from Gmail payload parts."""
+        import base64
+        mime_type = part.get("mimeType", "")
+        body_data = part.get("body", {}).get("data", "")
+        
+        plain_text = ""
+        html_text = ""
+        
+        if body_data and mime_type == "text/plain":
+            try:
+                plain_text = base64.urlsafe_b64decode(body_data.encode()).decode("utf-8", errors="ignore")
+            except Exception:
+                pass
+        elif body_data and mime_type == "text/html":
+            try:
+                html_text = base64.urlsafe_b64decode(body_data.encode()).decode("utf-8", errors="ignore")
+            except Exception:
+                pass
+                
+        parts = part.get("parts", [])
+        for subpart in parts:
+            sub_plain, sub_html = self._extract_body(subpart)
+            if sub_plain:
+                plain_text = sub_plain if not plain_text else plain_text + "\n" + sub_plain
+            if sub_html:
+                html_text = sub_html if not html_text else html_text + "\n" + sub_html
+                
+        return plain_text, html_text
+
     def execute(self, input_data: dict, config: dict) -> dict:
         """For trigger plugins, execute() generates/fetches the trigger payload."""
         simulate     = config.get("simulate_email", self.config.get("simulate_email", True))
@@ -368,22 +398,10 @@ class PluginImpl(Plugin):
                     self.logger.info("Gmail plugin: skipping email as it was received at %s, which is before workflow activation time %s", email_dt.isoformat(), flow_activated_at.isoformat())
                     return {}
 
-            # 5. Extract body (parse multipart or single)
-            body = ""
+            # 5. Extract body (parse multipart or single recursively)
             payload_data = email_data.get("payload", {})
-            parts = payload_data.get("parts", [])
-            
-            if parts:
-                for part in parts:
-                    if part.get("mimeType") == "text/plain":
-                        b_data = part.get("body", {}).get("data", "")
-                        if b_data:
-                            body = base64.urlsafe_b64decode(b_data.encode()).decode("utf-8")
-                            break
-            else:
-                b_data = payload_data.get("body", {}).get("data", "")
-                if b_data:
-                    body = base64.urlsafe_b64decode(b_data.encode()).decode("utf-8")
+            plain_text, html_text = self._extract_body(payload_data)
+            body = plain_text if plain_text else html_text
 
             self.logger.info("Gmail plugin: successfully fetched real email from %s", headers_dict.get("from", ""))
             return {
