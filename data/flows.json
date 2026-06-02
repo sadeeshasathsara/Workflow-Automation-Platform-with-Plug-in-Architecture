@@ -83,7 +83,7 @@
         "label": "\u264a Gemini AI",
         "plugin": "gemini",
         "config": {
-          "prompt": "Summarize the following email:\nSubject: {{subject}}\nFrom: {{from}}\nBody: {{body}}"
+          "prompt": "Summarize the following email from the user's perspective. Write the summary starting in the format: \"You have a new mail from {{from}} about {{subject}}.\" followed by a concise breakdown of the key details (like transaction amount, reference number, status, etc.).\n\nEmail Content:\nFrom: {{from}}\nSubject: {{subject}}\nBody: {{body}}"
         }
       },
       "position": {
