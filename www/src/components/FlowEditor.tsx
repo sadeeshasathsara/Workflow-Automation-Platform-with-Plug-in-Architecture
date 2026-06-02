@@ -15,6 +15,10 @@ import ReactFlow, {
     getEdgeCenter,
     EdgeProps,
 } from 'react-flow-renderer'
+
+// Standard React Flow styles for correct SVG alignment, rendering, and interaction
+import 'react-flow-renderer/dist/style.css'
+import 'react-flow-renderer/dist/theme-default.css'
 import {
     ExecutionResult,
     FlowPayload,

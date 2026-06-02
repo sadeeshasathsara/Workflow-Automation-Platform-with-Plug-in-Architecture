@@ -22,13 +22,13 @@
         "plugin": "logger"
       },
       "position": {
-        "x": 487.2564404622465,
-        "y": 31.422918195344963
+        "x": 646.4432977591975,
+        "y": -3.9519389817552906
       },
       "selected": false,
       "positionAbsolute": {
-        "x": 487.2564404622465,
-        "y": 31.422918195344963
+        "x": 646.4432977591975,
+        "y": -3.9519389817552906
       },
       "dragging": false
     },
@@ -40,9 +40,15 @@
         "plugin": "notification"
       },
       "position": {
-        "x": 360,
-        "y": 260
-      }
+        "x": 584.0407621216349,
+        "y": 329.9074558499838
+      },
+      "selected": false,
+      "positionAbsolute": {
+        "x": 584.0407621216349,
+        "y": 329.9074558499838
+      },
+      "dragging": false
     },
     {
       "id": "node-11",
@@ -52,15 +58,35 @@
         "plugin": "telegram"
       },
       "position": {
-        "x": 200.1268055248472,
-        "y": -11.33381535515619
+        "x": 327.3078396615647,
+        "y": -78.71449569248999
       },
       "width": 150,
       "height": 61,
       "selected": false,
       "positionAbsolute": {
-        "x": 200.1268055248472,
-        "y": -11.33381535515619
+        "x": 327.3078396615647,
+        "y": -78.71449569248999
+      },
+      "dragging": false
+    },
+    {
+      "id": "node-12",
+      "type": "default",
+      "data": {
+        "label": "\u264a Gemini AI",
+        "plugin": "gemini"
+      },
+      "position": {
+        "x": 384.50423944003626,
+        "y": 168.89540692768182
+      },
+      "width": 150,
+      "height": 61,
+      "selected": false,
+      "positionAbsolute": {
+        "x": 384.50423944003626,
+        "y": 168.89540692768182
       },
       "dragging": false
     }
@@ -73,7 +99,41 @@
       "targetHandle": null,
       "type": "smoothstep",
       "id": "reactflow__edge-logger-logger"
+    },
+    {
+      "source": "trigger",
+      "sourceHandle": null,
+      "target": "node-12",
+      "targetHandle": null,
+      "type": "smoothstep",
+      "id": "reactflow__edge-trigger-node-12"
+    },
+    {
+      "source": "node-12",
+      "sourceHandle": null,
+      "target": "node-11",
+      "targetHandle": null,
+      "type": "smoothstep",
+      "id": "reactflow__edge-node-12-node-11"
+    },
+    {
+      "source": "node-12",
+      "sourceHandle": null,
+      "target": "logger",
+      "targetHandle": null,
+      "type": "smoothstep",
+      "id": "reactflow__edge-node-12-logger"
+    },
+    {
+      "source": "node-12",
+      "sourceHandle": null,
+      "target": "notify",
+      "targetHandle": null,
+      "type": "smoothstep",
+      "id": "reactflow__edge-node-12-notify",
+      "selected": false
     }
   ],
-  "active": false
+  "active": false,
+  "activated_at": null
 }
